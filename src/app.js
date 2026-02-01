@@ -20,17 +20,7 @@ const app = express();
 /* ======================
    CORS (FINAL SAFE FIX)
 ====================== */
-app.use(
-  cors({
-    origin: true, // allow all origins dynamically
-    credentials: true,
-    methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization"],
-  })
-);
-
-// let cors handle preflight
-app.options("*", cors());
+app.use(cors());
 
 
 /* ======================
