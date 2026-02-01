@@ -17,7 +17,8 @@ router.post("/student/login", loginUser);
 /* ==========================
    TEACHER AUTH
 ========================== */
-router.post("/teacher/register", teacherRegister);
+// ❌ Disable in production
+//router.post("/teacher/register", teacherRegister);
 router.post("/teacher/login", teacherLogin);
 
 export default router;

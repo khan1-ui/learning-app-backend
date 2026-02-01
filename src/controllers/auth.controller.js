@@ -106,9 +106,6 @@ export const loginUser = async (req, res) => {
    TEACHER REGISTER
 ========================== */
 export const teacherRegister = async (req, res) => {
-  console.log("TEACHER REGISTER BODY =>", req.body);
-console.log("ENV KEY =>", process.env.TEACHER_SECRET_KEY);
-
   try {
     const { email, password, secretKey } = req.body;
 
