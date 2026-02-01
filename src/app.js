@@ -20,15 +20,35 @@ const app = express();
 /* ======================
    CORS (FIRST)
 ====================== */
+/* ======================
+   CORS (FIRST - FIXED)
+====================== */
+const allowedOrigins = [
+  "http://localhost:5173", // local frontend
+  "https://learning-app-backend-8o8a.onrender.com", // backend self
+];
+
 app.use(
   cors({
-    origin: "http://localhost:5173",
+    origin: function (origin, callback) {
+      // allow requests with no origin (Postman, server-to-server)
+      if (!origin) return callback(null, true);
+
+      if (allowedOrigins.includes(origin)) {
+        return callback(null, true);
+      } else {
+        return callback(new Error("Not allowed by CORS"));
+      }
+    },
     credentials: true,
-    methods: ["GET", "POST", "PUT","PATCH", "DELETE", "OPTIONS"],
+    methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
-    credentials: true,
   })
 );
+
+// 🔥 Let cors handle preflight automatically
+app.options("*", cors());
+
 /* ---------- PREFLIGHT HANDLER (VERY IMPORTANT) ---------- */
 app.use((req, res, next) => {
   if (req.method === "OPTIONS") {
@@ -75,7 +95,6 @@ app.use("/api/mcq", mcqRoutes);
 app.use("/api/auth", authRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/teachers", teacherRoutes);
-app.use("/api/subjects", subjectRoutes);
 app.use("/api/subjects", subjectRoutes);
 app.use("/api/chapters", chapterRoutes);
 app.use("/api/quizzes", quizRoutes);
