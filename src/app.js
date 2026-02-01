@@ -44,8 +44,7 @@ app.use(
   })
 );
 
-// 🔥 THIS LINE WAS MISSING
-app.options("*", cors());
+
 
 
 
