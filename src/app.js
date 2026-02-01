@@ -20,7 +20,31 @@ const app = express();
 /* ======================
    CORS (FINAL SAFE FIX)
 ====================== */
-app.use(cors());
+
+
+const allowedOrigins = [
+  "http://localhost:5173", // local frontend
+  "https://learning-app-backend-8o8a.onrender.com",
+];
+
+app.use(
+  cors({
+    origin: function (origin, callback) {
+      // allow server-to-server / postman
+      if (!origin) return callback(null, true);
+
+      if (allowedOrigins.includes(origin)) {
+        return callback(null, true);
+      } else {
+        return callback(new Error("Not allowed by CORS"));
+      }
+    },
+    credentials: true, // 🔥 required for auth/profile
+    methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+  })
+);
+
 
 
 /* ======================
