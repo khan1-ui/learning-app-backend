@@ -49,8 +49,11 @@ export const registerUser = async (req, res) => {
         }),
       },
     });
-  } catch (error) {
-    console.error("registerUser error:", error);
+  } catch (err) {
+    console.error("❌ teacherRegister FULL ERROR =>", err);
+  console.error("❌ ERROR NAME =>", err?.name);
+  console.error("❌ ERROR MESSAGE =>", err?.message);
+  console.error("❌ ERROR STACK =>", err?.stack);
     res.status(500).json({ message: "Student registration failed" });
   }
 };
