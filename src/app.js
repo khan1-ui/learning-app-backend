@@ -18,9 +18,8 @@ import paymentRoutes from "./routes/payment.routes.js";
 const app = express();
 
 /* ======================
-   CORS (FINAL SAFE FIX)
+   CORS (PRODUCTION FIX)
 ====================== */
-
 
 const allowedOrigins = [
   "http://localhost:5173", // local frontend
@@ -30,7 +29,7 @@ const allowedOrigins = [
 app.use(
   cors({
     origin: function (origin, callback) {
-      // allow server-to-server / postman
+      // allow non-browser requests (Postman, server-to-server)
       if (!origin) return callback(null, true);
 
       if (allowedOrigins.includes(origin)) {
@@ -39,11 +38,15 @@ app.use(
         return callback(new Error("Not allowed by CORS"));
       }
     },
-    credentials: true, // 🔥 required for auth/profile
+    credentials: true,
     methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
   })
 );
+
+// 🔥 THIS LINE WAS MISSING
+app.options("*", cors());
+
 
 
 
@@ -76,7 +79,6 @@ app.use("/api/mcq", mcqRoutes);
 app.use("/api/auth", authRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/teachers", teacherRoutes);
-app.use("/api/subjects", subjectRoutes);
 app.use("/api/subjects", subjectRoutes);
 app.use("/api/chapters", chapterRoutes);
 app.use("/api/quizzes", quizRoutes);
