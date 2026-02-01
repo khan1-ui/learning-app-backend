@@ -49,11 +49,8 @@ export const registerUser = async (req, res) => {
         }),
       },
     });
-  } catch (err) {
-    console.error("❌ teacherRegister FULL ERROR =>", err);
-  console.error("❌ ERROR NAME =>", err?.name);
-  console.error("❌ ERROR MESSAGE =>", err?.message);
-  console.error("❌ ERROR STACK =>", err?.stack);
+  } catch (error) {
+    console.error("registerUser error:", error);
     res.status(500).json({ message: "Student registration failed" });
   }
 };
@@ -139,8 +136,16 @@ console.log("ENV KEY =>", process.env.TEACHER_SECRET_KEY);
       },
     });
   } catch (err) {
-    res.status(500).json({ message: "Teacher registration failed" });
-  }
+  console.error("❌ teacherRegister FULL ERROR =>", err);
+  console.error("❌ ERROR NAME =>", err?.name);
+  console.error("❌ ERROR MESSAGE =>", err?.message);
+  console.error("❌ ERROR STACK =>", err?.stack);
+
+  return res.status(500).json({
+    message: err?.message || "Teacher registration failed",
+  });
+}
+
 };
 
 
