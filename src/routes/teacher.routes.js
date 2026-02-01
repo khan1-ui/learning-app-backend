@@ -9,9 +9,10 @@ const router = express.Router();
 // POST /api/teachers/profile
 router.post(
   "/profile",
-  protectTeacher,       // JWT verify
+  protectTeacher,
   upload.single("avatar"),
   createTeacherProfile
 );
+
 router.get("/analytics", protectTeacher, getTeacherAnalytics);
 export default router;

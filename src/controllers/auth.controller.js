@@ -110,7 +110,7 @@ export const teacherRegister = async (req, res) => {
     const { email, password, secretKey } = req.body;
 
     if (secretKey !== process.env.TEACHER_SECRET_KEY) {
-      return res.status(403).json({ message: "Invalid secret key" });
+      return res.status(403).json({ message: "Unauthorized" });
     }
 
     const exists = await Teacher.findOne({ email });
@@ -118,13 +118,7 @@ export const teacherRegister = async (req, res) => {
       return res.status(400).json({ message: "Teacher already exists" });
     }
 
-    const teacher = await Teacher.create({
-      email,
-      password,
-      secretKey,
-      role: "teacher",
-      profileCompleted: false,
-    });
+    const teacher = await Teacher.create({ email, password });
 
     res.status(201).json({
       success: true,
@@ -135,38 +129,28 @@ export const teacherRegister = async (req, res) => {
           role: "teacher",
           profileCompleted: false,
         },
-        token: generateToken({
-          id: teacher._id,
-          role: "teacher",
-        }),
+        token: generateToken({ id: teacher._id, role: "teacher" }),
       },
     });
-  } catch (error) {
-    console.error("teacherRegister error:", error);
+  } catch (err) {
     res.status(500).json({ message: "Teacher registration failed" });
   }
 };
+
 
 /* ==========================
    TEACHER LOGIN
 ========================== */
 export const teacherLogin = async (req, res) => {
   try {
-    const { email, password, secretKey } = req.body;
+    const { email, password } = req.body;
 
-    if (!email || !password || !secretKey) {
-      return res
-        .status(400)
-        .json({ message: "All fields are required" });
+    if (!email || !password) {
+      return res.status(400).json({ message: "All fields required" });
     }
 
-    const teacher = await Teacher.findOne({ email });
-    if (!teacher) {
-      return res.status(401).json({ message: "Invalid credentials" });
-    }
-
-    const isMatch = await teacher.matchPassword(password);
-    if (!isMatch || teacher.secretKey !== secretKey) {
+    const teacher = await Teacher.findOne({ email }).select("+password");
+    if (!teacher || !(await teacher.matchPassword(password))) {
       return res.status(401).json({ message: "Invalid credentials" });
     }
 
@@ -179,14 +163,11 @@ export const teacherLogin = async (req, res) => {
           role: "teacher",
           profileCompleted: teacher.profileCompleted,
         },
-        token: generateToken({
-          id: teacher._id,
-          role: "teacher",
-        }),
+        token: generateToken({ id: teacher._id, role: "teacher" }),
       },
     });
-  } catch (error) {
-    console.error("teacherLogin error:", error);
+  } catch {
     res.status(500).json({ message: "Teacher login failed" });
   }
 };
+

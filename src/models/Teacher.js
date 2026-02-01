@@ -3,24 +3,22 @@ import bcrypt from "bcryptjs";
 
 const teacherSchema = new mongoose.Schema(
   {
-    name: { type: String },
+    name: { type: String, default: "" },
     email: { type: String, required: true, unique: true },
-    password: { type: String, required: true },
-    secretKey: { type: String, required: true },
-    subject: String,
-    phone: String,
-    avatar: String,
+    password: { type: String, required: true, select: false },
+    subject: { type: String, default: "" },
+    phone: { type: String, default: "" },
+    avatar: { type: String, default: "" },
     role: { type: String, default: "teacher" },
     profileCompleted: { type: Boolean, default: false },
   },
   { timestamps: true }
 );
 
-teacherSchema.pre("save", async function () {
-  if (!this.isModified("password")) return ;
-  const salt = await bcrypt.genSalt(10);
-  this.password = await bcrypt.hash(this.password, salt);
-  
+teacherSchema.pre("save", async function (next) {
+  if (!this.isModified("password")) return next();
+  this.password = await bcrypt.hash(this.password, 10);
+  next();
 });
 
 teacherSchema.methods.matchPassword = function (password) {
