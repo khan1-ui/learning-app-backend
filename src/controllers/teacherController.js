@@ -28,3 +28,24 @@ export const createTeacherProfile = async (req, res) => {
     res.status(500).json({ message: "Profile update failed" });
   }
 };
+export const updateTeacherProfile = async (req, res) => {
+  const teacher = req.teacher;
+
+  teacher.name = req.body.name ?? teacher.name;
+  teacher.phone = req.body.phone ?? teacher.phone;
+
+  if (req.file) {
+    teacher.avatar = `/uploads/${req.file.filename}`;
+  }
+
+  await teacher.save();
+
+  res.json({
+    success: true,
+    data: {
+      name: teacher.name,
+      phone: teacher.phone,
+      avatar: teacher.avatar,
+    },
+  });
+};
