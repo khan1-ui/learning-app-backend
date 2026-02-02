@@ -23,6 +23,7 @@ const app = express();
 
 const allowedOrigins = [
   "http://localhost:5173", // local frontend
+  "https://learn-with-sazin.netlify.app"
   
 ];
 
