@@ -23,7 +23,7 @@ const app = express();
 
 const allowedOrigins = [
   "http://localhost:5173", // local frontend
-  "https://learning-app-backend-8o8a.onrender.com",
+  
 ];
 
 app.use(
