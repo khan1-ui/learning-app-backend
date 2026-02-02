@@ -76,26 +76,31 @@ export const loginUser = async (req, res) => {
       return res.status(401).json({ message: "Invalid credentials" });
     }
 
-    const profileCompleted = Boolean(user.phone && user.avatar);
+   const profileCompleted = Boolean(
+  user.phone && user.phone.trim() !== "" &&
+  user.avatar && user.avatar.trim() !== ""
+);
+
 
     res.status(200).json({
-      success: true,
-      data: {
-        user: {
-          _id: user._id,
-          name: user.name,
-          classLevel: user.classLevel,
-          role: user.role,
-          phone: user.phone || "",
-          avatar: user.avatar || "",
-          profileCompleted,
-        },
-        token: generateToken({
-          id: user._id,
-          role: "student",
-        }),
-      },
-    });
+  success: true,
+  data: {
+    user: {
+      _id: user._id,
+      name: user.name,
+      classLevel: user.classLevel,
+      role: user.role,
+      phone: user.phone || "",
+      avatar: user.avatar || null,   // 🔥 empty string না
+      profileCompleted,
+    },
+    token: generateToken({
+      id: user._id,
+      role: "student",
+    }),
+  },
+});
+
   } catch (error) {
     console.error("loginUser error:", error);
     res.status(500).json({ message: "Student login failed" });
